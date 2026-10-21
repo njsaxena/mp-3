@@ -1,58 +1,15 @@
-import { useState } from "react";
-import { add, divide, multiply, power, subtract } from "../calculator";
+import useCalculator from "../hooks/useCalculator";
 
 export default function Calculator() {
-    const [first, setFirst] = useState("");
-    const [second, setSecond] = useState("");
-    const [output, setOutput] = useState<number | string>("");
-
-    function getNumbers(): [number, number] | null {
-        const a = Number(first);
-        const b = Number(second);
-
-        if (first.trim() === "" || second.trim() === "") {
-            setOutput("Enter two valid numbers.");
-            return null;
-        }
-
-        return [a, b];
-    }
-
-    function addition() {
-        const numbers = getNumbers();
-        if (numbers) setOutput(add(numbers[0], numbers[1]));
-    }
-
-    function subtraction() {
-        const numbers = getNumbers();
-        if (numbers) setOutput(subtract(numbers[0], numbers[1]));
-    }
-
-    function multiplication() {
-        const numbers = getNumbers();
-        if (numbers) setOutput(multiply(numbers[0], numbers[1]));
-    }
-
-    function division() {
-        const numbers = getNumbers();
-        if (!numbers) return;
-        if (numbers[1] === 0) {
-            setOutput("Cannot divide by zero.");
-            return;
-        }
-        setOutput(divide(numbers[0], numbers[1]));
-    }
-
-    function exponentiation() {
-        const numbers = getNumbers();
-        if (numbers) setOutput(power(numbers[0], numbers[1]));
-    }
-
-    function clearCalculator() {
-        setFirst("");
-        setSecond("");
-        setOutput("");
-    }
+    const {
+        first,
+        setFirst,
+        second,
+        setSecond,
+        output,
+        calculate,
+        clearCalculator,
+    } = useCalculator();
 
     return (
         <div className="calculator">
@@ -67,11 +24,11 @@ export default function Calculator() {
                     </label>
                 </div>
                 <div className="calculator-buttons">
-                    <button type="button" onClick={addition}>+</button>
-                    <button type="button" onClick={subtraction}>-</button>
-                    <button type="button" onClick={multiplication}>*</button>
-                    <button type="button" onClick={division}>/</button>
-                    <button type="button" onClick={exponentiation}>**</button>
+                    <button type="button" onClick={() => calculate("add")}>+</button>
+                    <button type="button" onClick={() => calculate("subtract")}>-</button>
+                    <button type="button" onClick={() => calculate("multiply")}>*</button>
+                    <button type="button" onClick={() => calculate("divide")}>/</button>
+                    <button type="button" onClick={() => calculate("power")}>**</button>
                     <button type="button" onClick={clearCalculator}>Clear</button>
                 </div>
                 <p className={`output${typeof output === "number" && output < 0 ? " negative" : ""}`} aria-live="polite">
